@@ -1,4 +1,3 @@
-#include <Arduino.h>
 /*************************************************************
 
   This is a simple demo of sending and receiving some data.
@@ -7,10 +6,9 @@
 
 // Template ID, Device Name and Auth Token are provided by the Blynk.Cloud
 // See the Device Info tab, or Template settings
-#define BLYNK_TEMPLATE_ID           "TMPLTAgkUQEQ"
+#define BLYNK_TEMPLATE_ID           "TMPLhFgFZ6y3"
 #define BLYNK_DEVICE_NAME           "Quickstart Device"
-#define BLYNK_AUTH_TOKEN            "Qvj23f5eJuUV2a7-dLkj1EqFBGIMbom-"
-
+#define BLYNK_AUTH_TOKEN            "bt6iEAHTgBGZSPeZxJvG40ioD8k-nOAm"
 
 // Comment this out to disable prints and save space
 #define BLYNK_PRINT Serial
@@ -56,11 +54,12 @@ void myTimerEvent()
   Blynk.virtualWrite(V2, millis() / 1000);
 }
 
+int ledstate = 2;
 void setup()
 {
   // Debug console
   Serial.begin(115200);
-
+  pinMode(ledstate, OUTPUT);
   Blynk.begin(auth, ssid, pass);
   // You can also specify server:
   //Blynk.begin(auth, ssid, pass, "blynk.cloud", 80);
@@ -74,6 +73,8 @@ void loop()
 {
   Blynk.run();
   timer.run();
+  if(1){digitalWrite(ledstate, HIGH);}
+  
   // You can inject your own code or combine it with other sketches.
   // Check other examples on how to communicate with Blynk. Remember
   // to avoid delay() function!

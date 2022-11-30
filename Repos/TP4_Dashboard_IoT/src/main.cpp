@@ -1,5 +1,4 @@
 #include <Arduino.h>
-//#include <ESP8266WiFi.h>
 #include <WiFi.h>
 #include "Adafruit_MQTT.h"
 #include "ArduinoHttpClient.h"
@@ -8,9 +7,9 @@
 #include "DHT.h"
 #include <Adafruit_Sensor.h>
 
-#define PIN_RED    34 // GIOP23
-#define PIN_GREEN  33 // GIOP22
-#define PIN_BLUE   32 // GIOP21
+#define PIN_RED    19 // GIOP23
+#define PIN_GREEN  18 // GIOP22
+#define PIN_BLUE   23 // GIOP21
 #define BUTTON_PIN 12 // GIOP21 pin connected to button
 
 
@@ -36,7 +35,7 @@ char text[20];
 #define AIO_SERVER      "io.adafruit.com"
 #define AIO_SERVERPORT  1883
 #define AIO_USERNAME    "GTCV"
-#define AIO_KEY         "aio_bWmO015sGOHkeFNu806NeeLwOyA6"
+#define AIO_KEY         "aio_HIrx30444Ax1hCnQ2cht7JlyZTGd"
 
 // Functions
 void connect();
@@ -74,12 +73,6 @@ Adafruit_MQTT_Publish Temperature = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/
 Adafruit_MQTT_Publish Humidity = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/Humidity");
 Adafruit_MQTT_Publish LDR = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/LDR");
 Adafruit_MQTT_Publish BP = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/BP");
-/*Adafruit_MQTT_Publish LED = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/LED");
-Adafruit_MQTT_Publish LEDR = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/LEDR");
-Adafruit_MQTT_Publish LEDG = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/LEDG");
-Adafruit_MQTT_Publish LEDB = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/LEDB");
-Adafruit_MQTT_Publish BP = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/BP");*/
-
 
 void setup() {
 
@@ -160,7 +153,7 @@ void loop() {
       
       // convert mqtt ascii payload to int
       char *valueR = (char *)LEDR.lastread;
-      Serial.print(F("Received: "));
+      Serial.print(F("Red Received: "));
       Serial.println(valueR);
 
       // Apply message to lamp
@@ -175,7 +168,7 @@ void loop() {
      
       // convert mqtt ascii payload to int
       char *valueG = (char *)LEDG.lastread;
-      Serial.print(F("Received: "));
+      Serial.print(F("Green Received: "));
       Serial.println(valueG);
 
       // Apply message to lamp
@@ -190,7 +183,7 @@ void loop() {
      
       // convert mqtt ascii payload to int
       char *valueB = (char *)LEDB.lastread;
-      Serial.print(F("Received: "));
+      Serial.print(F("Blue Received: "));
       Serial.println(valueB);
 
       // Apply message to lamp
@@ -206,7 +199,7 @@ void loop() {
   // Grab the current state of the sensor
   int humidity_data = (int)dht.readHumidity();
   int temperature_data = (int)dht.readTemperature();
-  sensorValue = analogRead(35); // read analog input pin 0
+  sensorValue = analogRead(39); // read analog input pin 0
   State = digitalRead(BUTTON_PIN);
 
   // By default, the temperature report is in Celsius, for Fahrenheit uncomment
@@ -230,7 +223,7 @@ void loop() {
     Serial.println(F("LDR published!"));
   
   if (! BP.publish(State))
-    Serial.println(F("Failed to publish LDR"));
+    Serial.println(F("Failed to publish BP"));
   else
     Serial.println(F("BP published!"));
 
