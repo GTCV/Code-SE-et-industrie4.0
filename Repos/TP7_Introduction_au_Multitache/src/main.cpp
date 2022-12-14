@@ -63,7 +63,7 @@ void setup() {
 // Not used
 void loop() {
 
- /* int app_cpu = xPortGetCoreID();
+  int app_cpu = xPortGetCoreID();
   BaseType_t rc; 
 
   if (Button == LOW){
@@ -96,5 +96,5 @@ void loop() {
          app_cpu); // CPU
   assert(rc == pdPASS);
   }
-  vTaskDelete(nullptr);*/
+  vTaskDelete(nullptr);
 }

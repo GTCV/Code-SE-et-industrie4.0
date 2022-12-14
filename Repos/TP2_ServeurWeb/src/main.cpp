@@ -58,7 +58,7 @@ void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventT
       }
       if (msg == "on"){
         //led s'allume
-        digitalWrite(LED_PIN, LOW); // turn on LED
+        digitalWrite(LED_PIN, HIGH); // turn on LED
         oled.clearDisplay(); // clear display
         oled.setCursor(0, 10);       // set position to display
         oled.println("LED : ON"); // set text
@@ -67,7 +67,7 @@ void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventT
       }
       if (msg == "off"){
         //led s'étteint
-        digitalWrite(LED_PIN, HIGH);  // turn off LED
+        digitalWrite(LED_PIN, LOW);  // turn off LED
         oled.clearDisplay(); // clear display
         oled.setCursor(0, 10);       // set position to display
         oled.println("LED OFF"); // set text
@@ -156,7 +156,7 @@ void loop() {
   DynamicJsonDocument doc(256);
 
   doc["led"] = ledstate;  
-  doc["BP"] = digitalRead(BUTTON_PIN) ? "ACTIF" : "NOT ACTIF"; 
+  doc["BP"] = digitalRead(BUTTON_PIN) ? "NOT ACTIF" : "ACTIF"; 
   doc["TEMPERATURE"] = temperature;
   doc["HUMIDITY"] = humidity;
   

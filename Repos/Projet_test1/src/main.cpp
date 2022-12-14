@@ -1,9 +1,13 @@
+#include <FS.h>
 #include <DHT.h>
 #include <WiFi.h>
 #include <Arduino.h>
+#include <DNSServer.h>
+#include <HTTPClient.h>
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
 #include <Adafruit_Sensor.h>
+
 
 // Update these with values suitable for your network.
 
@@ -18,17 +22,23 @@ unsigned long lastMsg = 0;
 char msg[MSG_BUFFER_SIZE];
 int value = 0;
 int sensorValue;
+String ETATRGB;
+String ETATBP;
+String ETATLED;
 
-// DHT 11 sensor
-#define DHTPIN 26
-#define DHTTYPE DHT11
-#define PIN_RED    18 // GIOP23
-#define PIN_GREEN  19 // GIOP19
-#define PIN_BLUE   23 // GIOP18
-#define BUTTON_PIN 12 // GIOP21 pin connected to button
+#define LED 2 // GIOP2 pin connected to button
+#define STOP 13 // GIOP13 pin connected to button
+#define START 12 // GIOP12 pin connected to button
+#define DHTPIN 26 //GIOP12 pin connected to button
+#define BUZZER  17 // GIOP17 pin connected to button
+#define PIN_RED  16 // GIOP16 pin connected to button
+#define PIN_BLUE  18 // GIOP18 pin connected to button
+#define PIN_GREEN  19 // GIOP19 pin connected to button
+#define DHTTYPE     DHT11
 
 // DHT sensor
 DHT dht(DHTPIN, DHTTYPE);
+
 
 void setup_wifi() {
 
@@ -40,13 +50,6 @@ void setup_wifi() {
 
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-
-  randomSeed(micros());
 
   Serial.println("");
   Serial.println("WiFi connected");
@@ -129,20 +132,35 @@ void reconnect() {
 
 void setup() {
   
+  Serial.begin(115200);
   dht.begin();
   pinMode(PIN_RED,   OUTPUT);
   pinMode(PIN_GREEN, OUTPUT);
   pinMode(PIN_BLUE,  OUTPUT);
-  pinMode(BUTTON_PIN, INPUT_PULLUP);
-  pinMode(BUILTIN_LED, OUTPUT);     // Initialize the BUILTIN_LED pin as an output
-  Serial.begin(115200);
+  pinMode(START, INPUT_PULLUP);
+  pinMode(STOP, INPUT_PULLUP);
+  pinMode(LED, OUTPUT);  
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
   setup_wifi();
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
+  Serial.println("Started");
+  Serial.print("Connecting");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  randomSeed(analogRead(0));
+  Serial.println("TP3 GoogleSheets ready...");
 }
+unsigned long lastTime = 0;
+unsigned long timerDelay = 10000;
+String Temp, Hum, strParameter;
 
 void loop() {
-  
+     
+      
   if (!client.connected()) {
     reconnect();
   }
@@ -153,24 +171,61 @@ void loop() {
   if (now - lastMsg > 2000) {
     lastMsg = now;
     ++value;
-    /*snprintf (msg, MSG_BUFFER_SIZE, "hello world #%ld", value);
-    Serial.print("Publish message: ");
-    Serial.println(msg);*/
     
     int humidity = dht.readHumidity();
     int temperature = dht.readTemperature();
-    int sensorValue = analogRead(39); // read analog input pin 0
-
+    sensorValue = analogRead(33);
+    bool flag;
+     //sensorValue = analogRead(33);
     DynamicJsonDocument doc(256);
-
-    doc["BP"] = digitalRead(BUTTON_PIN) ? "ACTIF" : "NOT ACTIF";
+    if (!digitalRead(START) && !flag){
+       digitalWrite(LED, HIGH);
+       flag = 1;
+       ETATBP = "ACTIF";
+       ETATLED = "ON";
+    }
+    if (!digitalRead(STOP) && flag){
+       digitalWrite(LED, LOW);
+       flag = 0;
+       ETATBP = "NOT ACTIF";
+       ETATLED = "OFF";
+    }
+    if (25 < temperature && temperature < 28)
+    {
+      digitalWrite(PIN_GREEN, HIGH);
+      digitalWrite(PIN_BLUE, LOW);
+      digitalWrite(PIN_RED, LOW);
+      ETATRGB = "BON";
+      
+    }
+    else if (temperature < 25)
+    {
+      digitalWrite(PIN_BLUE, HIGH);
+      digitalWrite(PIN_GREEN, LOW);
+      digitalWrite(PIN_RED, LOW);
+      ETATRGB = "INFERIEUR";
+      
+    }
+    else if (temperature > 28)
+    {
+      digitalWrite(PIN_RED, HIGH);
+      digitalWrite(PIN_GREEN, LOW);
+      digitalWrite(PIN_BLUE, LOW);
+      ETATRGB = "SUPERIEUR";
+      
+    }
+    
+    
+    doc["ETAT"] = ETATRGB;
+    doc["LED"] = ETATLED;
+    doc["STARTSTOP"] =  ETATBP;
     doc["TEMPERATURE"] = temperature;
     doc["HUMIDITY"] = humidity;
     doc["LDR"] = sensorValue;
   
   char json_string[256];
   serializeJson(doc, json_string);
-  client.publish("Gauge", json_string);
+  client.publish("GAUGE", json_string);
   
 
  }

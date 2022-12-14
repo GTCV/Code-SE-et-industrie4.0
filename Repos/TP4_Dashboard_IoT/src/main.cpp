@@ -7,9 +7,9 @@
 #include "DHT.h"
 #include <Adafruit_Sensor.h>
 
-#define PIN_RED    19 // GIOP23
-#define PIN_GREEN  18 // GIOP22
-#define PIN_BLUE   23 // GIOP21
+#define PIN_RED    16 // GIOP23
+#define PIN_GREEN  19 // GIOP22
+#define PIN_BLUE   18 // GIOP21
 #define BUTTON_PIN 12 // GIOP21 pin connected to button
 
 
@@ -35,7 +35,7 @@ char text[20];
 #define AIO_SERVER      "io.adafruit.com"
 #define AIO_SERVERPORT  1883
 #define AIO_USERNAME    "GTCV"
-#define AIO_KEY         "aio_HIrx30444Ax1hCnQ2cht7JlyZTGd"
+#define AIO_KEY         "aio_pAUV06elaBZCfswOWdYGHLt3r4CG"
 
 // Functions
 void connect();
