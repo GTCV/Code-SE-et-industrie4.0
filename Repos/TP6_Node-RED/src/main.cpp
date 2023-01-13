@@ -5,6 +5,9 @@
 #include <PubSubClient.h>
 #include <Adafruit_Sensor.h>
 
+
+
+
 // Update these with values suitable for your network.
 
 const char* ssid = "cyrille";
@@ -139,6 +142,7 @@ void setup() {
   setup_wifi();
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
+
 }
 
 void loop() {

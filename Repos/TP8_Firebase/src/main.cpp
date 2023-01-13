@@ -18,23 +18,13 @@
 #include <ETH.h>
 #include <SD.h>
 
-
-// Provide the token generation process info.
 #include <addons/TokenHelper.h>
-
-// Provide the RTDB payload printing info and other helper functions.
 #include <addons/RTDBHelper.h>
 
 /* 1. Define the WiFi credentials */
 #define WIFI_SSID "cyrille"
 #define WIFI_PASSWORD "12345678"
-
-// For the following credentials, see examples/Authentications/SignInAsUser/EmailPassword/EmailPassword.ino
-
-/* 2. Define the API Key */
 #define API_KEY "AIzaSyDII3jFZzc9KVu4FIpnT5gBWVY1_JN9dA8"
-
-/* 3. Define the RTDB URL */
 #define DATABASE_URL "https://tp8-firebase-813f0-default-rtdb.europe-west1.firebasedatabase.app/" 
 
 #define DHTPIN 26
